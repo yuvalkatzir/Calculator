@@ -6,7 +6,7 @@
 
 body{
     padding: 0;
-    margin: 0%;
+    margin: 0;
     background: linear-gradient(225deg,#be3fd4,#f2822f);
 }
 
@@ -16,12 +16,12 @@ body{
     align-content: center;
     height: 100vh;
     grid-template-columns: repeat(4,13vh);
-    grid-template-rows: minmax(15vh,auto)  repeat(5,13vh);
+    grid-template-rows: minmax(15vh,auto)  repeat(6,13vh);
 }
 
 .calculator-grid > button {
     cursor: pointer;
-    font-size: 5vmin;
+    font-size: 5vh;
     border: 1px solid white;
     outline: none;
     background-color: rgba(255,255,255,.75);
@@ -47,12 +47,12 @@ body{
     word-break: break-all;
 }
 
-.previous-operand {
+.store-operand {
     color: rgba(255,255,255,.75);
-    font-size: 3vmin;
+    font-size: 3vh;
 }
 
 .current-operand {
     color: white;
-    font-size: 5vmin;
+    font-size: 5vh;
 }
