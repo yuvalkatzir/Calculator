@@ -260,3 +260,5 @@ buttonAnswer.forEach(button=>{
        calculator.updateDisplay();
    });
 });
+/*let date = new Date()
+alert(date.toLocaleDateString() + '\n' + date.toLocaleTimeString())*/
