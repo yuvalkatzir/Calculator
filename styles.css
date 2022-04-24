@@ -18,7 +18,7 @@ body{
     display: grid;
     justify-content: center;
     align-content: center;
-    height: 100vh;
+    height: 90vh;
     grid-template-columns: repeat(4,13vh);
     grid-template-rows: minmax(15vh,auto)  repeat(6,13vh);
 }
