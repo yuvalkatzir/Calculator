@@ -118,6 +118,9 @@ class Calculator {
                             this.inputStack = [...this.inputStack.slice(0,i), ...this.inputStack.splice(i + 1)];
                             this.inputStack[i] = '-';
                             i--;
+                        } else if(this.inputStack[i - 1] === '*' || this.inputStack[i - 1] === '÷'){
+                            this.inputStack = [...this.inputStack.slice(0,i), ...this.inputStack.splice(i + 1)];
+                            i--;
                         }
                         //i = i - 1;
                         break;
