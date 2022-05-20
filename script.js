@@ -13,6 +13,7 @@ class Calculator {
         this.storeOperandTextElement.innerHTML    = 'Ans = ' + this.Ans + ' | x = ' + this.x + ' | y = ' + this.y;
         this.currentOperandTextElement.innerHTML  = '';
         this.inputStack = [];
+        wasAnswered = false;
     }
 
     delete(){
@@ -36,12 +37,6 @@ class Calculator {
             return;
         }
 
-        /* if (this.inputStack.length === 0)
-             this.inputStack.push(number);
-         else if (isNaN(this.inputStack[this.inputStack.length - 1]) &&
-             (!(this.inputStack[this.inputStack.length - 1].includes('.')))) {
-             this.inputStack.push(number);
-         } else this.inputStack[this.inputStack.length - 1] += number;*/
         if (this.inputStack.length === 0)
             this.inputStack.push(number);
         else if (isNaN(parseFloat(this.inputStack[this.inputStack.length - 1]))) {
@@ -92,8 +87,6 @@ class Calculator {
             this.inputStack = [this.Ans];
         } else {
             return parseFloat(this.inputStack[0]);
-            this.currentOperandTextElement.innerHTML = this.inputStack[0];
-            this.inputStack = [this.inputStack[0]];
         }
     }
 
@@ -122,7 +115,6 @@ class Calculator {
                             this.inputStack = [...this.inputStack.slice(0,i), ...this.inputStack.splice(i + 1)];
                             i--;
                         }
-                        //i = i - 1;
                         break;
                     case '-':
                         if (this.inputStack[i + 1] === '+') {
@@ -130,7 +122,6 @@ class Calculator {
                             this.inputStack[i] = '-';
                             i--;
                         } else if (this.inputStack[i + 1] === '-') {
-                            //let temp = this.inputStack[0];
                             this.inputStack = [...this.inputStack.slice(0,i), ...this.inputStack.splice(i + 1)];
                             this.inputStack[i] = '+';
                             i--;
@@ -163,8 +154,6 @@ class Calculator {
                     leftNumber      = answerStack.pop();
                     rightNumber     = this.inputStack[i];
                     flagCalcNext    = false;
-                    //i=0;
-                    //answerStack= [];
 
                     switch (currentOperator) {
                         case '+': answerStack.push(parseFloat(leftNumber) + parseFloat(rightNumber));
@@ -191,11 +180,15 @@ class Calculator {
     }
 
     appendVariable(variable){
-        if(this.inputStack.length !== 0 && (this.inputStack[this.inputStack.length - 1] === 'Ans' ||
-            this.inputStack[this.inputStack.length - 1] === 'x'   ||
-            this.inputStack[this.inputStack.length - 1] === 'y'))
-            return;
-        this.inputStack.push(variable);
+        if(this.inputStack.length !== 0 && (
+            this.inputStack[this.inputStack.length - 1] === '+' ||
+            this.inputStack[this.inputStack.length - 1] === '-' ||
+            this.inputStack[this.inputStack.length - 1] === '*' ||
+            this.inputStack[this.inputStack.length - 1] === '÷'))
+            this.inputStack.push(variable);
+        if(this.inputStack.length === 0)
+            this.inputStack.push(variable);
+        return;
     }
 
     store(variable){}
@@ -233,7 +226,8 @@ const buttonX          = document.querySelectorAll('[data-store-x]');
 const buttonY          = document.querySelectorAll('[data-store-y]');
 
 // Store used
-let store = false;
+let store       = false;
+let wasAnswered = false;
 
 // Text Elements
 const storeOperandTextElement   = document.getElementById("data-store-operand");
@@ -243,6 +237,11 @@ const calculator = new Calculator(storeOperandTextElement,currentOperandTextElem
 
 buttonNumber.forEach(button => {
     button.addEventListener('click',()=>{
+        if (wasAnswered === true){
+            wasAnswered = false;
+            calculator.clear();
+            calculator.updateDisplay();
+        }
         if(CheckStore()){
             calculator.clear();
             return;
@@ -254,6 +253,8 @@ buttonNumber.forEach(button => {
 
 buttonOperation.forEach(button => {
     button.addEventListener('click',()=>{
+        if (wasAnswered === true)
+            wasAnswered = false;
         if(CheckStore()){
             calculator.clear();
             return;
@@ -271,7 +272,7 @@ buttonClear.forEach(button => {
         }
         calculator.clear();
         calculator.updateDisplay();
-    })
+    });
 });
 
 buttonRemoveData.forEach(button => {
@@ -287,6 +288,9 @@ buttonRemoveData.forEach(button => {
 
 buttonDelete.forEach(button=>{
     button.addEventListener('click',()=>{
+        if (wasAnswered === true){
+            wasAnswered = false;
+        }
         if(CheckStore()){
             calculator.clear();
             return;
@@ -304,11 +308,17 @@ buttonEquals.forEach(button=>{
         }
         calculator.compute();
         calculator.updateDisplay();
+        wasAnswered = true;
     });
 });
 
 buttonAnswer.forEach(button=>{
     button.addEventListener('click',()=>{
+        if (wasAnswered === true){
+            wasAnswered = false;
+            calculator.clear();
+            calculator.updateDisplay();
+        }
         if(CheckStore()){
             calculator.clear();
             return;
@@ -320,36 +330,50 @@ buttonAnswer.forEach(button=>{
 
 buttonStore.forEach(button=>{
     button.addEventListener('click',()=>{
+        if (wasAnswered === true) {
+            wasAnswered = false;
+        }
         calculator.StoreTo();
-        //calculator.updateDisplay();
-    })
-})
+    });
+});
 
 buttonX.forEach(button=>{
     button.addEventListener('click',()=>{
+        if (wasAnswered === true){
+            wasAnswered = false;
+            calculator.clear();
+            calculator.updateDisplay();
+        }
         if(CheckStore()){
             calculator.x = calculator.compute(true);
             calculator.updateDisplay();
             store = false;
+            wasAnswered = true;
             return;
         }
         calculator.appendVariable("x");
         calculator.updateDisplay();
-    })
-})
+    });
+});
 
 buttonY.forEach(button=>{
     button.addEventListener('click',()=>{
+        if (wasAnswered === true){
+            wasAnswered = false;
+            calculator.clear();
+            calculator.updateDisplay();
+        }
         if(CheckStore()){
             calculator.y = calculator.compute(true);
             calculator.updateDisplay();
             store = false;
+            wasAnswered = true;
             return;
         }
         calculator.appendVariable("y");
         calculator.updateDisplay();
-    })
-})
+    });
+});
 
 function CheckStore(){
     if (store === true){
@@ -358,7 +382,3 @@ function CheckStore(){
     }
     return false;
 }
-//test for future use:
-
-/*let date = new Date()
-alert(date.toLocaleDateString() + '\n' + date.toLocaleTimeString())*/
