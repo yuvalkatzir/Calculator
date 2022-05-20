@@ -36,12 +36,12 @@ class Calculator {
             return;
         }
 
-       /* if (this.inputStack.length === 0)
-            this.inputStack.push(number);
-        else if (isNaN(this.inputStack[this.inputStack.length - 1]) &&
-            (!(this.inputStack[this.inputStack.length - 1].includes('.')))) {
-            this.inputStack.push(number);
-        } else this.inputStack[this.inputStack.length - 1] += number;*/
+        /* if (this.inputStack.length === 0)
+             this.inputStack.push(number);
+         else if (isNaN(this.inputStack[this.inputStack.length - 1]) &&
+             (!(this.inputStack[this.inputStack.length - 1].includes('.')))) {
+             this.inputStack.push(number);
+         } else this.inputStack[this.inputStack.length - 1] += number;*/
         if (this.inputStack.length === 0)
             this.inputStack.push(number);
         else if (isNaN(parseFloat(this.inputStack[this.inputStack.length - 1]))) {
@@ -70,8 +70,8 @@ class Calculator {
     compute(lastStore = false){
         if(isNaN(this.inputStack[this.inputStack.length - 1]) &&
             (this.inputStack[this.inputStack.length - 1] !== 'Ans' &&
-            this.inputStack[this.inputStack.length - 1] !== 'x' &&
-            this.inputStack[this.inputStack.length - 1] !== 'y')){
+                this.inputStack[this.inputStack.length - 1] !== 'x' &&
+                this.inputStack[this.inputStack.length - 1] !== 'y')){
             this.inputStack.pop();
         }
 
@@ -133,7 +133,7 @@ class Calculator {
                             i--;
                         } else if(!isNaN(this.inputStack[i + 1])){
                             this.inputStack[i + 1] = - this.inputStack[i + 1];
-                            this.inputStack = [...this.inputStack.slice(0,i), ...this.inputStack.splice(i + 1)];
+                            this.inputStack[i] = '+';
                             i--;
                         }
                         break;
@@ -187,8 +187,8 @@ class Calculator {
 
     appendVariable(variable){
         if(this.inputStack.length !== 0 && (this.inputStack[this.inputStack.length - 1] === 'Ans' ||
-                                            this.inputStack[this.inputStack.length - 1] === 'x'   ||
-                                            this.inputStack[this.inputStack.length - 1] === 'y'))
+            this.inputStack[this.inputStack.length - 1] === 'x'   ||
+            this.inputStack[this.inputStack.length - 1] === 'y'))
             return;
         this.inputStack.push(variable);
     }
@@ -303,14 +303,14 @@ buttonEquals.forEach(button=>{
 });
 
 buttonAnswer.forEach(button=>{
-   button.addEventListener('click',()=>{
-       if(CheckStore()){
-           calculator.clear();
-           return;
-       }
-       calculator.appendVariable("Ans");
-       calculator.updateDisplay();
-   });
+    button.addEventListener('click',()=>{
+        if(CheckStore()){
+            calculator.clear();
+            return;
+        }
+        calculator.appendVariable("Ans");
+        calculator.updateDisplay();
+    });
 });
 
 buttonStore.forEach(button=>{
