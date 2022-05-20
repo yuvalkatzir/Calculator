@@ -22,8 +22,10 @@ class Calculator {
                 this.inputStack.pop();
                 return;
             }
-
             this.inputStack[this.inputStack.length - 1] = this.inputStack[this.inputStack.length - 1].slice(0, -1);
+            if(this.inputStack[this.inputStack.length - 1] === ''){
+                this.inputStack.pop();
+            }
         }
     }
 
@@ -65,7 +67,7 @@ class Calculator {
         this.inputStack.push(operation);
     }
 
-    compute(){
+    compute(lastStore = false){
         if(isNaN(this.inputStack[this.inputStack.length - 1]) &&
             (this.inputStack[this.inputStack.length - 1] !== 'Ans' &&
             this.inputStack[this.inputStack.length - 1] !== 'x' &&
@@ -74,7 +76,7 @@ class Calculator {
         }
 
         if(this.inputStack.length === 0)
-            return;
+            return 0;
         if(this.inputStack[0] === '-')
             this.inputStack.unshift('0');
 
@@ -84,9 +86,15 @@ class Calculator {
         this.calc('*','÷');
         this.calc('+','-');
 
-        this.Ans = parseFloat(this.inputStack[0]);
-        this.currentOperandTextElement.innerHTML = this.Ans;
-        this.inputStack = [this.Ans];
+        if(lastStore === false) {
+            this.Ans = parseFloat(this.inputStack[0]);
+            this.currentOperandTextElement.innerHTML = this.Ans;
+            this.inputStack = [this.Ans];
+        } else {
+            return parseFloat(this.inputStack[0]);
+            this.currentOperandTextElement.innerHTML = this.inputStack[0];
+            this.inputStack = [this.inputStack[0]];
+        }
     }
 
     parser() {
@@ -109,6 +117,7 @@ class Calculator {
                         if (this.inputStack[i + 1] === '-') {
                             this.inputStack = [...this.inputStack.slice(0,i), ...this.inputStack.splice(i + 1)];
                             this.inputStack[i] = '-';
+                            i--;
                         }
                         //i = i - 1;
                         break;
@@ -116,12 +125,17 @@ class Calculator {
                         if (this.inputStack[i + 1] === '+') {
                             this.inputStack = [...this.inputStack.slice(0,i), ...this.inputStack.splice(i + 1)];
                             this.inputStack[i] = '-';
+                            i--;
                         } else if (this.inputStack[i + 1] === '-') {
                             //let temp = this.inputStack[0];
                             this.inputStack = [...this.inputStack.slice(0,i), ...this.inputStack.splice(i + 1)];
                             this.inputStack[i] = '+';
+                            i--;
+                        } else if(!isNaN(this.inputStack[i + 1])){
+                            this.inputStack[i + 1] = - this.inputStack[i + 1];
+                            this.inputStack = [...this.inputStack.slice(0,i), ...this.inputStack.splice(i + 1)];
+                            i--;
                         }
-                        //i = i - 1;
                         break;
                 }
             }
@@ -194,6 +208,11 @@ class Calculator {
         this.storeOperandTextElement.innerHTML   = 'Ans = ' + this.Ans + ' | x = ' + this.x + ' | y = ' + this.y;
         this.currentOperandTextElement.innerHTML = query;
     }
+
+    StoreTo(){
+        store = true;
+        this.currentOperandTextElement.innerHTML = 'Store into X or Y ?';
+    }
 }
 
 // Buttons
@@ -205,6 +224,11 @@ const buttonEquals     = document.querySelectorAll('[data-equals]');
 const buttonRemoveData = document.querySelectorAll('[data-remove]');
 const buttonDelete     = document.querySelectorAll('[data-delete]');
 const buttonAnswer     = document.querySelectorAll('[data-answer]');
+const buttonX          = document.querySelectorAll('[data-store-x]');
+const buttonY          = document.querySelectorAll('[data-store-y]');
+
+// Store used
+let store = false;
 
 // Text Elements
 const storeOperandTextElement   = document.getElementById("data-store-operand");
@@ -214,6 +238,10 @@ const calculator = new Calculator(storeOperandTextElement,currentOperandTextElem
 
 buttonNumber.forEach(button => {
     button.addEventListener('click',()=>{
+        if(CheckStore()){
+            calculator.clear();
+            return;
+        }
         calculator.appendNumber(button.innerHTML);
         calculator.updateDisplay();
     });
@@ -221,6 +249,10 @@ buttonNumber.forEach(button => {
 
 buttonOperation.forEach(button => {
     button.addEventListener('click',()=>{
+        if(CheckStore()){
+            calculator.clear();
+            return;
+        }
         calculator.chooseOperation(button.innerHTML);
         calculator.updateDisplay();
     });
@@ -228,6 +260,10 @@ buttonOperation.forEach(button => {
 
 buttonClear.forEach(button => {
     button.addEventListener('click',()=>{
+        if(CheckStore()){
+            calculator.clear();
+            return;
+        }
         calculator.clear();
         calculator.updateDisplay();
     })
@@ -235,6 +271,10 @@ buttonClear.forEach(button => {
 
 buttonRemoveData.forEach(button => {
     button.addEventListener('click',()=>{
+        if(CheckStore()){
+            calculator.clear();
+            return;
+        }
         calculator.clearData();
         calculator.updateDisplay();
     });
@@ -242,6 +282,10 @@ buttonRemoveData.forEach(button => {
 
 buttonDelete.forEach(button=>{
     button.addEventListener('click',()=>{
+        if(CheckStore()){
+            calculator.clear();
+            return;
+        }
         calculator.delete();
         calculator.updateDisplay();
     });
@@ -249,6 +293,10 @@ buttonDelete.forEach(button=>{
 
 buttonEquals.forEach(button=>{
     button.addEventListener('click',()=>{
+        if(CheckStore()){
+            calculator.clear();
+            return;
+        }
         calculator.compute();
         calculator.updateDisplay();
     });
@@ -256,12 +304,56 @@ buttonEquals.forEach(button=>{
 
 buttonAnswer.forEach(button=>{
    button.addEventListener('click',()=>{
+       if(CheckStore()){
+           calculator.clear();
+           return;
+       }
        calculator.appendVariable("Ans");
        calculator.updateDisplay();
    });
 });
-/*
-test for future use:
 
-let date = new Date()
+buttonStore.forEach(button=>{
+    button.addEventListener('click',()=>{
+        calculator.StoreTo();
+        //calculator.updateDisplay();
+    })
+})
+
+buttonX.forEach(button=>{
+    button.addEventListener('click',()=>{
+        if(CheckStore()){
+            calculator.x = calculator.compute(true);
+            calculator.updateDisplay();
+            store = false;
+            return;
+        }
+        calculator.appendVariable("x");
+        calculator.updateDisplay();
+    })
+})
+
+buttonY.forEach(button=>{
+    button.addEventListener('click',()=>{
+        if(CheckStore()){
+            calculator.y = calculator.compute(true);
+            calculator.updateDisplay();
+            store = false;
+            return;
+        }
+        calculator.appendVariable("y");
+        calculator.updateDisplay();
+    })
+})
+
+function CheckStore(){
+    if (store === true){
+        store = false;
+        return true;
+    }
+    return false;
+}
+//test for future use:
+
+/*let date = new Date()
 alert(date.toLocaleDateString() + '\n' + date.toLocaleTimeString())*/
