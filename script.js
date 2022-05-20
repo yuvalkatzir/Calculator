@@ -134,6 +134,8 @@ class Calculator {
                         } else if(!isNaN(this.inputStack[i + 1])){
                             this.inputStack[i + 1] = - this.inputStack[i + 1];
                             this.inputStack[i] = '+';
+                            if(this.inputStack.length > 1 && (this.inputStack[i - 1] === '*'|| this.inputStack[i - 1] === '÷'))
+                                this.inputStack = [...this.inputStack.slice(0,i), ...this.inputStack.splice(i + 1)];
                             i--;
                         }
                         break;
