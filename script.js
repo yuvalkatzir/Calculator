@@ -253,8 +253,12 @@ buttonNumber.forEach(button => {
 
 buttonOperation.forEach(button => {
     button.addEventListener('click',()=>{
-        if (wasAnswered === true)
+        if (wasAnswered === true) {
             wasAnswered = false;
+            calculator.clear();
+            calculator.appendVariable("Ans");
+            calculator.updateDisplay();
+        }
         if(CheckStore()){
             calculator.clear();
             return;
