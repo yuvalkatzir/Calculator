@@ -352,7 +352,7 @@ buttonX.forEach(button=>{
             calculator.x = calculator.compute(true);
             calculator.updateDisplay();
             store = false;
-            wasAnswered = true;
+            wasAnswered = false;
             return;
         }
         calculator.appendVariable("x");
@@ -371,7 +371,7 @@ buttonY.forEach(button=>{
             calculator.y = calculator.compute(true);
             calculator.updateDisplay();
             store = false;
-            wasAnswered = true;
+            wasAnswered = false;
             return;
         }
         calculator.appendVariable("y");
