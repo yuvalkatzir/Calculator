@@ -133,7 +133,7 @@ class Calculator {
                             i--;
                         } else if(!isNaN(this.inputStack[i + 1])){
                             this.inputStack[i + 1] = - this.inputStack[i + 1];
-                            this.inputStack = [...this.inputStack.slice(0,i), ...this.inputStack.splice(i + 1)];
+                            this.inputStack[i] = '+';
                             i--;
                         }
                         break;
