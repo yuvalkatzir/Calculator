@@ -20,12 +20,12 @@ body{
     align-content: center;
     height: 100vh;
     grid-template-columns: repeat(4,13vh);
-    grid-template-rows: minmax(5vh,auto)  repeat(6,13vh);
+    grid-template-rows: minmax(15vh,auto)  repeat(6,13vh);
 }
 
 .calculator-grid > button {
     cursor: pointer;
-    font-size: 5vh;
+    font-size: 3.5vh;
     border: 1px solid white;
     outline: none;
     background-color: rgba(255,255,255,.75);
